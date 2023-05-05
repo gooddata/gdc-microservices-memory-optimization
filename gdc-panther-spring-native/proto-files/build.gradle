@@ -1,0 +1,93 @@
+/*
+ * (C) 2022 GoodData Corporation
+ */
+
+subprojects {
+    apply plugin: 'com.google.protobuf'
+    apply plugin: 'java-library'
+
+    description = "Protocol buffers (protobuf) Java/Kotlin sources generator for ${name - '-interface'}"
+
+    sourceSets {
+        main {
+            proto {
+                srcDir '../proto'
+            }
+        }
+    }
+
+    def generatedFilesBaseDir = "$buildDir/generated-sources"
+
+    protobuf {
+        protoc {
+            if (!project.hasProperty("localProtoc")) {
+                artifact = "com.google.protobuf:protoc:${protobufJavaVersion}"
+            }
+        }
+        plugins {
+            if (!project.hasProperty("localProtoc")) {
+                'grpc-java' { artifact = "io.grpc:protoc-gen-grpc-java:${grpcVersion}" }
+            }
+            kroto { artifact = "com.github.marcoferrer.krotoplus:protoc-gen-kroto-plus:${krotoPlusVersion}:jvm8@jar" }
+        }
+        generateProtoTasks {
+            def krotoConfig = file("${project.parent.projectDir}/config/krotoPlusConfig.asciipb")
+            all().each { task ->
+                // Adding the config file to the task inputs lets UP-TO-DATE checks
+                // include changes to configuration
+                task.inputs.files krotoConfig
+
+                task.plugins {
+                    'grpc-java' { outputSubDir = "java" }
+                    kroto {
+                        outputSubDir = "java"
+                        option "ConfigPath=$krotoConfig"
+                    }
+                }
+            }
+        }
+    }
+
+    idea {
+        module {
+            inheritOutputDirs = false
+
+            generatedSourceDirs += files("${generatedFilesBaseDir}/main/java")
+
+            outputDir = file("$buildDir/classes/kotlin/main")
+            testOutputDir = file("$buildDir/classes/kotlin/test")
+        }
+    }
+
+    dependencies {
+        api("io.grpc:grpc-protobuf:${grpcVersion}")
+        protobuf(files("../../commons"))
+        implementation("com.google.protobuf:protobuf-java:${protobufJavaVersion}")
+        implementation("com.google.api.grpc:proto-google-common-protos:${googleCommonProtosVersion}")
+        implementation("io.grpc:grpc-all:${grpcVersion}") {
+            exclude group: 'io.grpc', module: 'grpc-netty-shaded'
+        }
+        // Fixes CVE-2021-21295/CVE-2021-21409 in netty-codec-http2 used in grpc-all module
+        constraints {
+            implementation("io.netty:netty-codec-http2") {
+                version {
+                    require '4.1.61.Final'
+                }
+            }
+        }
+        implementation("javax.annotation:javax.annotation-api:${javaxAnnotationVersion}")
+        implementation("com.github.marcoferrer.krotoplus:kroto-plus-coroutines:${krotoPlusVersion}")
+        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${kotlinCoroutinesVersion}")
+        implementation("com.squareup:kotlinpoet:1.9.0") {
+            exclude group: 'org.jetbrains.kotlin'
+        }
+    }
+
+    bootJar {
+        enabled = false
+    }
+
+    jar {
+        enabled = true
+    }
+}

@@ -1,0 +1,64 @@
+HELP.md
+.gradle
+build/
+lib/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+.java-version
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+bin/
+!**/src/main/**/bin/
+!**/src/test/**/bin/
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+out/
+!**/src/main/**/out/
+!**/src/test/**/out/
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+### VS Code ###
+.vscode/
+
+### Gradle ###
+build
+!gradle/wrapper/gradle-wrapper.properties
+
+### Python ###
+venv
+__pycache__/
+dist/
+
+# Ignore macOs junk
+.DS_Store
+
+### UI ###
+ui/registration-ui/*/node_modules
+ui/registration-ui/**/*.module.scss.d.ts
+ui/registration-ui/*/coverage
+ui/registration-ui/*/ci/results/**
+ui/registration-ui/*/build
+ui/registration-ui/*/.env.conf
+ui/registration-ui/app/.env
+
+### ui-tests ###
+node_modules
+.env

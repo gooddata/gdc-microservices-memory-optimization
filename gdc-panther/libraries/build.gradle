@@ -1,0 +1,12 @@
+/*
+ * (C) 2023 GoodData Corporation
+ */
+subprojects {
+    bootJar {
+        enabled = false
+    }
+
+    jar {
+        enabled = true
+    }
+}

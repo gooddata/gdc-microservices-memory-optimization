@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~ Copyright (C) 2022, GoodData(R) Corporation. All rights reserved.
+  -->
+
+<configuration>
+    <!-- do not use <jmxConfigurator/> and rely on new /loggers resource of Spring Boot 1.5 Actuator -->
+
+    <springProperty scope="context" name="app-name" source="spring.application.name"/>
+    <springProperty scope="context" name="syslogHost" source="gdc.logging.syslog.host" defaultValue="localhost"/>
+    <springProperty scope="context" name="port" source="gdc.logging.syslog.port" defaultValue="514"/>
+    <springProperty scope="context" name="appender" source="gdc.logging.appender" defaultValue="CONSOLE"/>
+    <springProperty scope="context" name="component" source="gdc.logging.component" defaultValue="${app-name}"/>
+    <springProperty scope="context" name="additional-params" source="gdc.logging.additional-parameters" defaultValue=""/>
+    <springProperty scope="context" name="obfuscate" source="gdc.logging.obfuscate" defaultValue="false"/>
+
+    <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} component=${component} ${additional-params} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}</pattern>
+            <charset>utf8</charset>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <if condition='property("appender").contains("SYSLOG_AND_CONSOLE")'>
+            <then>
+                <appender-ref ref="SYSLOG"/>
+                <appender-ref ref="CONSOLE"/>
+            </then>
+            <else>
+                <appender-ref ref="${appender}"/>
+            </else>
+        </if>
+    </root>
+</configuration>

@@ -1,0 +1,25 @@
+/*
+ * (C) 2023 GoodData Corporation
+ */
+syntax = "proto3";
+package tiger;
+
+option java_multiple_files = true;
+option java_package = "com.gooddata.panther.organizationapi.service";
+import "google/protobuf/timestamp.proto";
+
+message ApiTokenRequest {
+    string organizationId = 1;
+    string userId = 2;
+    string tokenId = 3;
+    google.protobuf.Timestamp validTo = 4;
+}
+
+message ApiToken {
+    string organizationId = 1;
+    string token = 2;
+}
+
+service MetadataStoreService {
+    rpc createInternalApiToken (ApiTokenRequest) returns (ApiToken);
+}

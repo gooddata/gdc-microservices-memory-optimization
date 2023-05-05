@@ -1,0 +1,23 @@
+# (C) 2023 GoodData Corporation
+FROM ghcr.io/graalvm/native-image:ol7-java11-22.3.1 AS graalvm
+WORKDIR /app
+COPY build/libs/organization-api-service-0.1-all.jar /app/organization-api-service.jar
+COPY build/native/generated/generateResourcesConfigFile /app/resourcesConfigFile
+
+RUN native-image -cp /app/organization-api-service.jar \
+    --no-fallback \
+    --verbose \
+    -H:Name=organization-api-service \
+    -J--add-exports=org.graalvm.nativeimage.builder/com.oracle.svm.core.configure=ALL-UNNAMED \
+    -J--add-exports=org.graalvm.nativeimage.builder/com.oracle.svm.core.jdk=ALL-UNNAMED \
+    -J--add-exports=org.graalvm.nativeimage.builder/com.oracle.svm.core.jni=ALL-UNNAMED \
+    -J--add-exports=org.graalvm.sdk/org.graalvm.nativeimage.impl=ALL-UNNAMED \
+    -H:ConfigurationFileDirectories=/app/resourcesConfigFile \
+    -H:Class=com.gooddata.panther.organizationapi.OrganizationApiApplicationKt \
+    --initialize-at-build-time=kotlin
+
+FROM frolvlad/alpine-glibc:alpine-3.17
+RUN apk --no-cache update && apk add libstdc++ curl
+EXPOSE 8080
+COPY --from=graalvm /app/organization-api-service /app/organization-api-service
+ENTRYPOINT ["/app/organization-api-service"]

@@ -1,0 +1,22 @@
+---
+# For all rules
+ignore: |
+  /charts/
+  /.gitlab-ci.yml
+
+yaml-files:
+  - '*.yaml'
+  - '*.yml'
+  - '.yamllint'
+
+extends: default
+
+rules:
+  # 80 chars should be enough, but don't fail if a line is longer
+  line-length:
+    max: 120
+    allow-non-breakable-words: true
+    allow-non-breakable-inline-mappings: true
+    level: warning
+  comments: disable
+  comments-indentation: disable

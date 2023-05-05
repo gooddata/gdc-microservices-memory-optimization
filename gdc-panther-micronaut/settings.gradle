@@ -1,0 +1,19 @@
+/*
+ * (C) 2023 GoodData Corporation
+ */
+rootProject.name = "gdc-panther-micronaut"
+
+// --- Includes ---
+include ':proto-files:api-token-interface'
+include ':microservices:organization-api-service'
+include ':libraries:common'
+includeBuild '../gdc-api-support'
+
+// --- Functions ---
+
+/**
+ * Apply specific project directory (/java) for each proto-files JVM project
+ */
+project(':proto-files').children.each { childProject ->
+    childProject.projectDir = file("${childProject.projectDir}/java")
+}

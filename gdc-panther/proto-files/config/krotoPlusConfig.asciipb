@@ -1,0 +1,16 @@
+proto_builders {
+  unwrap_builders: true
+  use_dsl_markers: true
+}
+
+grpc_stub_exts {
+  support_coroutines: true
+}
+
+grpc_coroutines {
+
+}
+
+generator_scripts {
+    script_path: "scripts/VarArgExtensionGenerator.kts"
+}

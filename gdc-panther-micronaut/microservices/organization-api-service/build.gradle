@@ -1,0 +1,94 @@
+/*
+ * (C) 2023 GoodData Corporation
+ */
+version = '0.1'
+group = 'com.gooddata.panther.organizationapi'
+
+def kotlinVersion = project.properties.get('kotlinVersion')
+
+dependencies {
+
+    kapt 'io.micronaut:micronaut-http-validation:3.8.7'
+    annotationProcessor 'io.micronaut.serde:micronaut-serde-processor:1.5.2'
+    annotationProcessor 'io.micronaut:micronaut-graal:3.8.7'
+    annotationProcessor 'io.micronaut:micronaut-inject-java:3.8.7'
+
+    runtimeOnly 'io.micronaut:micronaut-validation:3.8.7'
+    runtimeOnly 'io.micronaut:micronaut-http-client:3.8.7'
+    implementation 'io.micronaut:micronaut-http:2.0.2'
+    runtimeOnly 'io.micronaut:micronaut-http-server-netty:3.8.7'
+    runtimeOnly 'io.micronaut:micronaut-jackson-core:3.2.2'
+    implementation 'io.micronaut.serde:micronaut-serde-api:1.5.2'
+    implementation 'io.micrometer:micrometer-registry-prometheus'
+    compileOnly 'org.graalvm.nativeimage:svm:22.3.1'
+    implementation project(':libraries:common')
+    implementation project(':proto-files:api-token-interface')
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+    implementation 'com.fasterxml.jackson.module:jackson-module-kotlin'
+    implementation "com.fasterxml.jackson.module:jackson-module-kotlin:$kotlinJacksonModuleVersion"
+    implementation "io.github.microutils:kotlin-logging:$kotlinLoggingVersion"
+
+    runtimeOnly "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutinesVersion"
+    runtimeOnly "org.jetbrains.kotlinx:kotlinx-coroutines-reactor:$kotlinCoroutinesVersion"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:$kotlinCoroutinesVersion"
+    
+    implementation "org.eclipse.jgit:org.eclipse.jgit:$jgitVersion"
+    implementation "com.fasterxml.jackson.module:jackson-module-kotlin:2.12.6"
+    implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.12.6"
+
+    implementation "io.kubernetes:client-java:15.0.1"
+
+    implementation "io.grpc:grpc-stub:$grpcVersion"
+    implementation "com.github.marcoferrer.krotoplus:kroto-plus-coroutines:$krotoPlusVersion"
+}
+
+application {
+    mainClass = 'com.gooddata.panther.organizationapi.OrganizationApiApplicationKt'
+}
+
+java {
+    sourceCompatibility = JavaVersion.toVersion("11")
+}
+
+task prepareKotlinBuildScriptModel {
+
+}
+
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "gradle.plugin.com.github.johnrengelman:shadow:7.1.0"
+    }
+}
+
+build.dependsOn(generateResourcesConfigFile)
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'com.gooddata.panther.organizationapi.OrganizationApiApplicationKt'
+    }
+}
+
+tasks {
+    compileKotlin {
+        kotlinOptions.jvmTarget = '11'
+    }
+}
+
+micronaut {
+    testRuntime('junit5')
+
+    processing {
+        incremental(true)
+        annotations('com.gooddata.panther.organizationapi.*')
+    }
+}
+
+graalvmNative {
+    toolchainDetection = false
+}

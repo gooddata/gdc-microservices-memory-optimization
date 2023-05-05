@@ -1,0 +1,18 @@
+# (C) 2023 GoodData Corporation
+micronaut:
+  application:
+    name: organizationApiService
+  ssl:
+    build-self-signed: true
+  server:
+    http-version: HTTP_2_0
+  metrics:
+    enabled: true
+    export:
+      prometheus:
+        enabled: true
+        step: PT1M
+        descriptions: true
+endpoints:
+  prometheus:
+    enabled: false

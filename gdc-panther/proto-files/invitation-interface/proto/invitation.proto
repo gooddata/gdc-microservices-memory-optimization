@@ -1,0 +1,14 @@
+/*
+ * (C) 2023 GoodData Corporation
+ */
+syntax = "proto3";
+package tiger;
+option java_multiple_files = true;
+option java_package = "com.gooddata.tiger.invitation";
+
+message InviteRequest {
+  string email = 1;
+  string organizationId = 2;
+  string hostname = 3;
+  string inviterId = 4;
+}

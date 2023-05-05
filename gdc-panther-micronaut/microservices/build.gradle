@@ -1,0 +1,35 @@
+/*
+ * (C) 2023 GoodData Corporation
+ */
+subprojects {
+    apply plugin: "kotlin-kapt"
+    apply plugin: "com.gorylenko.gradle-git-properties"
+
+    shadowJar {
+        mergeServiceFiles()
+    }
+
+    /**
+     *  Gradle's Dependency Locking mechanism to lock classpath dependencies of the module.
+     *
+     *  By running any task with `--write-locks` cmd line args (like `./gradlew clean build --write-locks`) you'll generate
+     *  lock file (`gradle/dependency-locks/compileClasspath.lockfile`).
+     *
+     *  To update dependency it's necessary to run task with `--update-locks` args.
+     */
+    configurations {
+        compileClasspath {
+            resolutionStrategy.activateDependencyLocking()
+        }
+    }
+
+    gitProperties {
+        dateFormat = "yyyy-MM-dd HH:mm:ssZ"
+        dateFormatTimeZone = "GMT"
+    }
+
+    /**
+     * Make sure the generateGitProperties task always executes (used in Spring banner)
+     */
+    generateGitProperties.outputs.upToDateWhen { false }
+}

@@ -1,0 +1,12 @@
+/*
+ * Copyright (C) 2022 GoodData Corporation
+ */
+
+description = 'Common stuff like exceptions...'
+
+dependencies {
+    api('com.gooddata.api:gdc-api-exceptions:1.3.0')
+
+    implementation("io.micronaut:micronaut-http:2.0.2")
+    implementation 'io.micrometer:micrometer-registry-prometheus'
+}

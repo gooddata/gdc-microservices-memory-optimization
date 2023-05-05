@@ -1,0 +1,12 @@
+/*
+ * Copyright (C) 2022 GoodData Corporation
+ */
+
+description = 'Common stuff like exceptions...'
+
+dependencies {
+    api('com.gooddata.api:gdc-api-exceptions:1.4.0')
+
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'io.micrometer:micrometer-registry-prometheus'
+}

@@ -1,0 +1,20 @@
+/*
+ * (C) 2023 GoodData Corporation
+ */
+rootProject.name = "gdc-panther-spring-native"
+
+// --- Includes ---
+include ':proto-files:invitation-interface'
+include ':proto-files:api-token-interface'
+
+include (":libraries:common")
+include (":microservices:organization-api-service")
+
+includeBuild ("../gdc-api-support")
+
+/**
+ * Apply specific project directory (/java) for each proto-files JVM project
+ */
+project(':proto-files').children.each { childProject ->
+    childProject.projectDir = file("${childProject.projectDir}/java")
+}

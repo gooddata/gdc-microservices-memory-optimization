@@ -1,0 +1,7 @@
+---
+version: 3
+project:
+  id: gdc-panther-spring-native
+
+telemetry:
+  scope: 'off'
